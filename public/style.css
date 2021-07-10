@@ -1,9 +1,8 @@
-
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 html {
   font-family: "Montserrat", sans-serif;
@@ -16,14 +15,31 @@ body {
 }
 
 header {
-    background-color: #3C8DAD;
-    padding: 8px 32px;
+  background-color: #3C8DAD;
+  padding: 8px 32px;
 }
 
 header h1 {
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-  }
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+}
+
+.startButton {
+  margin-top: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  margin: 10px;
+}
+
+.stopButton {
+  margin: 0px 40px 0 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 
 .time {
   /* position: relative; */
