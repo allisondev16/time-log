@@ -12,32 +12,39 @@ function Time() {
     }
 
     
+    
 
     const [isStart, setStart] = useState(false);
     const [isBreak, setBreak] = useState(false);
     const [finalTime, setFinalTime] = useState();
-    // const [breakTime, setBreakTime] = useState();
-
+    const [breakTime, setBreakTime] = useState();
+    const [resumeTime, setResumeTime] = useState();
 
     function handleStart() {
         setStart(true);
         const time = new Date();
-
         const finalTime = time.addHours(10);
-
         const localFinalTime = finalTime.toLocaleTimeString();
         setFinalTime(localFinalTime);
     }
 
     function handleStartFromBreak() {
         setStart(true);
-        console.log(finalTime);
+        console.log("Final time: "+finalTime);
+        console.log("Break time: "+breakTime);
+        const resumeTime = new Date();
+        const localResumeTime = resumeTime.toLocaleTimeString();
+        setResumeTime(localResumeTime);
+        
     }
 
     function handleBreak() {
         setStart(false);
         setBreak(true);
-        
+        const breakTime = new Date();
+        const localBreakTime = breakTime.toLocaleTimeString();
+        setBreakTime(localBreakTime);
+        console.log("Resume time: "+resumeTime);
     }
 
 
