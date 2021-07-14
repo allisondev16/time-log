@@ -28,8 +28,6 @@ function Time() {
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
 
-    const [duration, setDuration] = useState();
-
     function handleStart() {
         setStart(true);
         // let time = new Date();
@@ -53,60 +51,16 @@ function Time() {
         let resumeTime = new Date();
         setResumeTime(resumeTime);
 
-        // {!isLunchBreak ?
-        // let breakDuration = resumeTime - breakTime;
-        // let breakDurationSeconds = breakDuration / 1000;
-        // console.log("Break duration in seconds: " + breakDurationSeconds);
+        let breakDuration = resumeTime - breakTime;
+        let breakDurationSeconds = breakDuration / 1000;
+        console.log("Break duration in seconds: " + breakDurationSeconds);
 
-        // let newFinalTime = new Date(finalTime.getTime() + breakDuration);
-        // console.log("New Final Time :" + newFinalTime);
-        // setFinalTime(newFinalTime) :
-
-        // //Calculate the exceeded time of 1 hour lunch break
-        // let lunchDuration = resumeTime - lunchBreakTime - 60*60*1000;
-        // console.log("Lunch break overtime in ms: " + lunchDuration);
-
-        // let newFinalTime = new Date(finalTime.getTime() + lunchDuration);
-        // setFinalTime(newFinalTime);
-        // }
-
-        if (isLunchBreak) {
-            adjustFinalTimeFromBreak(lunchBreakTime);
-        } else {
-            adjustFinalTimeFromBreak(breakTime);
-        }
-    }
-
-    function adjustFinalTimeFromBreak(breakTime) {
-        let durationOfBreak
-        console.log("Resume time: " + resumeTime);
-        console.log("Final time: " + finalTime);
-        console.log("Break time: " + breakTime);
-        
-            if (isLunchBreak) {
-                durationOfBreak = resumeTime - breakTime - 60 * 60 * 1000;
-            } else {
-                durationOfBreak = resumeTime - breakTime;
-            }
-        
-
-        setDuration(durationOfBreak);
-        console.log("Duration in ms: " + durationOfBreak);
-
-        let newFinalTime = new Date(finalTime.getTime() + duration);
-        console.log("New final time: " + newFinalTime);
+        let newFinalTime = new Date(finalTime.getTime() + breakDuration);
+        console.log("New Final Time :" + newFinalTime);
         setFinalTime(newFinalTime);
     }
 
-    function handleLunchBreak() {
-        setLunchBreak(true);
-        setStart(false);
-        setBreak(true);
-        let lunchBreakTime = new Date();
-        setLunchBreakTime(lunchBreakTime);
-        console.log("Lunch time: " + lunchBreakTime);
-
-    }
+    
 
     function handleDoneWorking() {
         setStart(false);
@@ -138,9 +92,7 @@ function Time() {
                 <Box ml={2} mr={2} mt={10}>
                     <Button onClick={handleBreak} variant="outlined" color="secondary" size="large">Take a Break</Button>
                 </Box>
-                <Box ml={2} mr={2} mt={10}>
-                    <Button onClick={handleLunchBreak} variant="outlined" color="secondary" size="large">Lunch Break</Button>
-                </Box>
+                
                 <Box ml={2} mr={2} mt={10}>
                     <Button onClick={handleDoneWorking} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
