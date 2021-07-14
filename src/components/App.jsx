@@ -1,11 +1,10 @@
 import React from "react";
+import Header from "./Header";
 import Time from "./Time";
 
 function App () {
     return <div>
-    <header>
-    <h1>Time Log @ Work</h1>
-    </header>
+    <Header />
     <Time />
     </div>
 }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
-import BreakTime from "./BreakTime";
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
 
@@ -11,16 +10,25 @@ function Time() {
         return this;
     }
 
-    
+
 
     const [isStart, setStart] = useState(false);
     const [finalTime, setFinalTime] = useState();
-    
+
     const [isBreak, setBreak] = useState(false);
     const [breakTime, setBreakTime] = useState();
 
     const [resumeTime, setResumeTime] = useState();
 
+    const [doneWorkingTime, setDoneWorkingTime] = useState();
+
+    const [isLunchBreak, setLunchBreak] = useState(false);
+    const [lunchBreakTime, setLunchBreakTime] = useState();
+
+    const [isDone, setDone] = useState(false);
+    const [overtime, setOvertime] = useState();
+
+    const [duration, setDuration] = useState();
 
     function handleStart() {
         setStart(true);
@@ -30,29 +38,91 @@ function Time() {
     }
 
     function handleBreak() {
+        setLunchBreak(false);
         setStart(false);
         setBreak(true);
-        setBreakTime(new Date());
-        console.log("Resume time: "+resumeTime);
+        let breakTime = new Date();
+        setBreakTime(breakTime);
+
     }
 
     function handleStartFromBreak() {
         setStart(true);
-        console.log("Final time: "+finalTime);
-        console.log("Break time: "+breakTime);
+        setDone(false);
+
         let resumeTime = new Date();
         setResumeTime(resumeTime);
-        
-        let breakDuration = resumeTime - breakTime;
-        let breakDurationSeconds = breakDuration/1000;
-        console.log("Break duration in seconds: " + breakDurationSeconds);
 
-        let newFinalTime = new Date(finalTime.getTime() + breakDuration);
-        console.log("New Final Time :" + newFinalTime);
+        // {!isLunchBreak ?
+        // let breakDuration = resumeTime - breakTime;
+        // let breakDurationSeconds = breakDuration / 1000;
+        // console.log("Break duration in seconds: " + breakDurationSeconds);
+
+        // let newFinalTime = new Date(finalTime.getTime() + breakDuration);
+        // console.log("New Final Time :" + newFinalTime);
+        // setFinalTime(newFinalTime) :
+
+        // //Calculate the exceeded time of 1 hour lunch break
+        // let lunchDuration = resumeTime - lunchBreakTime - 60*60*1000;
+        // console.log("Lunch break overtime in ms: " + lunchDuration);
+
+        // let newFinalTime = new Date(finalTime.getTime() + lunchDuration);
+        // setFinalTime(newFinalTime);
+        // }
+
+        if (isLunchBreak) {
+            adjustFinalTimeFromBreak(lunchBreakTime);
+        } else {
+            adjustFinalTimeFromBreak(breakTime);
+        }
+    }
+
+    function adjustFinalTimeFromBreak(breakTime) {
+        let durationOfBreak
+        console.log("Resume time: " + resumeTime);
+        console.log("Final time: " + finalTime);
+        console.log("Break time: " + breakTime);
+        
+            if (isLunchBreak) {
+                durationOfBreak = resumeTime - breakTime - 60 * 60 * 1000;
+            } else {
+                durationOfBreak = resumeTime - breakTime;
+            }
+        
+
+        setDuration(durationOfBreak);
+        console.log("Duration in ms: " + durationOfBreak);
+
+        let newFinalTime = new Date(finalTime.getTime() + duration);
+        console.log("New final time: " + newFinalTime);
         setFinalTime(newFinalTime);
     }
 
-    
+    function handleLunchBreak() {
+        setLunchBreak(true);
+        setStart(false);
+        setBreak(true);
+        let lunchBreakTime = new Date();
+        setLunchBreakTime(lunchBreakTime);
+        console.log("Lunch time: " + lunchBreakTime);
+
+    }
+
+    function handleDoneWorking() {
+        setStart(false);
+
+        let doneWorkingTime = new Date();
+        setDoneWorkingTime(doneWorkingTime);
+        console.log("Done Working time: " + doneWorkingTime);
+
+        // final time - done working time
+        let overtime = doneWorkingTime - finalTime;
+        setOvertime(overtime);
+        console.log("Overtime in hours: " + overtime / 1000 / 60 / 60);
+
+        // render the result
+        setDone(true);
+    }
 
     return <div>
 
@@ -62,20 +132,32 @@ function Time() {
                 <h1>{finalTime.toLocaleTimeString()}</h1>
             </div></Fade>}
 
+
         {isStart && <Zoom in={isStart}>
             <div className="stopButton">
                 <Box ml={2} mr={2} mt={10}>
-                    <BreakTime
-                        onClick={handleBreak}
-                    />
+                    <Button onClick={handleBreak} variant="outlined" color="secondary" size="large">Take a Break</Button>
                 </Box>
                 <Box ml={2} mr={2} mt={10}>
-                    <Button variant="contained" color="secondary" size="large">Done Working</Button>
+                    <Button onClick={handleLunchBreak} variant="outlined" color="secondary" size="large">Lunch Break</Button>
+                </Box>
+                <Box ml={2} mr={2} mt={10}>
+                    <Button onClick={handleDoneWorking} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
             </div></Zoom>}
 
+        {isDone && <Fade in={isDone}>
+            <div className="time">
+                <h3>Overtime</h3>
+                <h1>{(overtime / 1000 / 60 / 60).toFixed(2) + " hours"}</h1>
+            </div></Fade>}
+
         <div className="startButton">
-            {!isStart && <Button onClick={isBreak ? handleStartFromBreak : handleStart} variant="contained" color="primary" size="large">{isBreak ? "Resume Working" : "Start Working"}</Button>}
+            {!isStart &&
+                <Fade in={!isDone}>
+                    <Button onClick={isBreak ? handleStartFromBreak : handleStart} variant="contained" color="primary" size="large">{isBreak ? "Resume Working" : "Start Working"}</Button>
+                </Fade>}
+
         </div>
     </div>
 }
