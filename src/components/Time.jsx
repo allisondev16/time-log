@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
@@ -22,11 +22,15 @@ function Time() {
 
     const [doneWorkingTime, setDoneWorkingTime] = useState();
 
-    const [isLunchBreak, setLunchBreak] = useState(false);
-    const [lunchBreakTime, setLunchBreakTime] = useState();
-
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
+
+    const [breakDuration, setBreakDuration] = useState(0);
+
+    // Allocated Break Time:
+    let allocatedBreakTime = 135;
+    const [remainingBreakTime, setRemainingBreakTime] = useState();
+    
 
     function handleStart() {
         setStart(true);
@@ -36,7 +40,6 @@ function Time() {
     }
 
     function handleBreak() {
-        setLunchBreak(false);
         setStart(false);
         setBreak(true);
         let breakTime = new Date();
@@ -51,16 +54,24 @@ function Time() {
         let resumeTime = new Date();
         setResumeTime(resumeTime);
 
-        let breakDuration = resumeTime - breakTime;
-        let breakDurationSeconds = breakDuration / 1000;
-        console.log("Break duration in seconds: " + breakDurationSeconds);
+        let currentBreakDuration = resumeTime - breakTime;
+        setBreakDuration((prevValue)=>{
+            return prevValue+currentBreakDuration;
+        });
+        console.log("Break duration in seconds: " + breakDuration/1000);
 
         let newFinalTime = new Date(finalTime.getTime() + breakDuration);
         console.log("New Final Time :" + newFinalTime);
         setFinalTime(newFinalTime);
     }
 
-    
+    // used Effect Hook to use the updated value of breakDuration (Reference: https://reactjs.org/docs/hooks-effect.html)
+    useEffect(()=>{
+        let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
+        setRemainingBreakTime(currentRemainingBreakTime);
+        
+    });
+
 
     function handleDoneWorking() {
         setStart(false);
@@ -92,11 +103,18 @@ function Time() {
                 <Box ml={2} mr={2} mt={10}>
                     <Button onClick={handleBreak} variant="outlined" color="secondary" size="large">Take a Break</Button>
                 </Box>
-                
+
                 <Box ml={2} mr={2} mt={10}>
                     <Button onClick={handleDoneWorking} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
+
             </div></Zoom>}
+
+        {isStart && <Fade in={isStart}>
+            <div className="time">
+                <h4>Remaining Break Time: {(remainingBreakTime/60/1000).toFixed(2) + " minutes"}</h4>
+            </div></Fade>}
+
 
         {isDone && <Fade in={isDone}>
             <div className="time">
