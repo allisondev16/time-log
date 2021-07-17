@@ -28,9 +28,8 @@ function Time() {
     const [breakDuration, setBreakDuration] = useState(0);
 
     // Allocated Break Time:
-    let allocatedBreakTime = 135;
+    let allocatedBreakTime = 0.1;
     const [remainingBreakTime, setRemainingBreakTime] = useState();
-    
 
     function handleStart() {
         setStart(true);
@@ -55,23 +54,26 @@ function Time() {
         setResumeTime(resumeTime);
 
         let currentBreakDuration = resumeTime - breakTime;
-        setBreakDuration((prevValue)=>{
-            return prevValue+currentBreakDuration;
+        setBreakDuration((prevValue) => {
+            return prevValue + currentBreakDuration;
         });
-        console.log("Break duration in seconds: " + breakDuration/1000);
 
-        let newFinalTime = new Date(finalTime.getTime() + breakDuration);
-        console.log("New Final Time :" + newFinalTime);
-        setFinalTime(newFinalTime);
+        let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
+        setRemainingBreakTime(currentRemainingBreakTime);
+
+        if (remainingBreakTime < 0) {
+            let newFinalTime = new Date(finalTime.getTime() + currentBreakDuration);
+            setFinalTime(newFinalTime);
+        }
     }
 
     // used Effect Hook to use the updated value of breakDuration (Reference: https://reactjs.org/docs/hooks-effect.html)
-    useEffect(()=>{
+    useEffect(() => {
         let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
         setRemainingBreakTime(currentRemainingBreakTime);
-        
     });
 
+    
 
     function handleDoneWorking() {
         setStart(false);
@@ -112,7 +114,7 @@ function Time() {
 
         {isStart && <Fade in={isStart}>
             <div className="time">
-                <h4>Remaining Break Time: {(remainingBreakTime/60/1000).toFixed(2) + " minutes"}</h4>
+                <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minutes"}</h4>
             </div></Fade>}
 
 
