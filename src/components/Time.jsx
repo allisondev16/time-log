@@ -14,6 +14,7 @@ function Time() {
 
     const [isStart, setStart] = useState(false);
     const [finalTime, setFinalTime] = useState();
+    const [newFinalTime, setNewFinalTime] = useState();
 
     const [isBreak, setBreak] = useState(false);
     const [breakTime, setBreakTime] = useState();
@@ -25,6 +26,9 @@ function Time() {
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
 
+    const [currentBreakDuration, setCurrentBreakDuration] = useState();
+
+    // Outstanding break time
     const [breakDuration, setBreakDuration] = useState(0);
 
     // Allocated Break Time:
@@ -36,6 +40,7 @@ function Time() {
         // let time = new Date();
         let finalTime = new Date().addHours(10);
         setFinalTime(finalTime);
+        setNewFinalTime(finalTime);
     }
 
     function handleBreak() {
@@ -58,22 +63,20 @@ function Time() {
             return prevValue + currentBreakDuration;
         });
 
-        let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
-        setRemainingBreakTime(currentRemainingBreakTime);
-
-        if (remainingBreakTime < 0) {
-            let newFinalTime = new Date(finalTime.getTime() + currentBreakDuration);
-            setFinalTime(newFinalTime);
-        }
+        setCurrentBreakDuration(currentBreakDuration);
     }
 
     // used Effect Hook to use the updated value of breakDuration (Reference: https://reactjs.org/docs/hooks-effect.html)
+    // used a dependency to avoid looping (Reference: https://dmitripavlutin.com/react-useeffect-infinite-loop/)
     useEffect(() => {
         let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
         setRemainingBreakTime(currentRemainingBreakTime);
-    });
 
-    
+        if (currentRemainingBreakTime < 0) {
+            let newFinalTime = new Date(finalTime.getTime() - currentRemainingBreakTime);
+            setNewFinalTime(newFinalTime);
+        }
+    }, [breakDuration]);
 
     function handleDoneWorking() {
         setStart(false);
@@ -96,7 +99,7 @@ function Time() {
         {isStart && <Fade in={isStart}>
             <div className="time">
                 <h3>Stop working by</h3>
-                <h1>{finalTime.toLocaleTimeString()}</h1>
+                <h1>{newFinalTime.toLocaleTimeString()}</h1>
             </div></Fade>}
 
 
