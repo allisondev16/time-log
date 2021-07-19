@@ -3,14 +3,14 @@ import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
+import Paper from '@material-ui/core/Paper';
+import TimeBox from './TimeBox';
 
 function Time() {
     Date.prototype.addHours = function (h) {
         this.setTime(this.getTime() + (h * 60 * 60 * 1000));
         return this;
     }
-
-
 
     const [isStart, setStart] = useState(false);
     const [finalTime, setFinalTime] = useState();
@@ -19,20 +19,14 @@ function Time() {
     const [isBreak, setBreak] = useState(false);
     const [breakTime, setBreakTime] = useState();
 
-    const [resumeTime, setResumeTime] = useState();
-
-    const [doneWorkingTime, setDoneWorkingTime] = useState();
-
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
-
-    const [currentBreakDuration, setCurrentBreakDuration] = useState();
 
     // Outstanding break time
     const [breakDuration, setBreakDuration] = useState(0);
 
-    // Allocated Break Time:
-    let allocatedBreakTime = 0.1;
+    // Allocated Break Time in minutes:
+    let allocatedBreakTime = 175;
     const [remainingBreakTime, setRemainingBreakTime] = useState();
 
     function handleStart() {
@@ -56,14 +50,11 @@ function Time() {
         setDone(false);
 
         let resumeTime = new Date();
-        setResumeTime(resumeTime);
 
         let currentBreakDuration = resumeTime - breakTime;
         setBreakDuration((prevValue) => {
             return prevValue + currentBreakDuration;
         });
-
-        setCurrentBreakDuration(currentBreakDuration);
     }
 
     // used Effect Hook to use the updated value of breakDuration (Reference: https://reactjs.org/docs/hooks-effect.html)
@@ -82,7 +73,6 @@ function Time() {
         setStart(false);
 
         let doneWorkingTime = new Date();
-        setDoneWorkingTime(doneWorkingTime);
         console.log("Done Working time: " + doneWorkingTime);
 
         // final time - done working time
@@ -96,36 +86,40 @@ function Time() {
 
     return <div>
 
-        {isStart && <Fade in={isStart}>
-            <div className="time">
-                <h3>Stop working by</h3>
-                <h1>{newFinalTime.toLocaleTimeString()}</h1>
-            </div></Fade>}
-
+        {isStart &&
+            <TimeBox
+                isStart={isStart}
+                title={"Stop working by"}
+                time={newFinalTime.toLocaleTimeString()}
+            />
+        }
 
         {isStart && <Zoom in={isStart}>
+
             <div className="stopButton">
-                <Box ml={2} mr={2} mt={10}>
+                <Box ml={2} mr={2} mt={8} mb={6}>
                     <Button onClick={handleBreak} variant="outlined" color="secondary" size="large">Take a Break</Button>
                 </Box>
 
-                <Box ml={2} mr={2} mt={10}>
+                <Box ml={2} mr={2} mt={8} mb={6}>
                     <Button onClick={handleDoneWorking} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
 
             </div></Zoom>}
+
 
         {isStart && <Fade in={isStart}>
             <div className="time">
                 <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minutes"}</h4>
             </div></Fade>}
 
-
-        {isDone && <Fade in={isDone}>
-            <div className="time">
-                <h3>Overtime</h3>
-                <h1>{(overtime / 1000 / 60 / 60).toFixed(2) + " hours"}</h1>
-            </div></Fade>}
+        {isDone &&
+            <TimeBox
+                isStart={isDone}
+                title={"Overtime"}
+                time={(overtime / 1000 / 60 / 60).toFixed(2) + " hours"}
+            />
+        }
 
         <div className="startButton">
             {!isStart &&
