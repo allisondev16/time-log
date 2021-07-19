@@ -3,14 +3,13 @@ import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
-import Paper from '@material-ui/core/Paper';
 import TimeBox from './TimeBox';
 
 function Time() {
-    Date.prototype.addHours = function (h) {
-        this.setTime(this.getTime() + (h * 60 * 60 * 1000));
-        return this;
-    }
+    // Date.prototype.addHours = function (h) {
+    //     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    //     return this;
+    // }
 
     const [isStart, setStart] = useState(false);
     const [finalTime, setFinalTime] = useState();
@@ -32,7 +31,8 @@ function Time() {
     function handleStart() {
         setStart(true);
         // let time = new Date();
-        let finalTime = new Date().addHours(10);
+        // let finalTime = new Date().addHours(10);
+        let finalTime = new Date(new Date().getTime() + 10*60*60*1000);
         setFinalTime(finalTime);
         setNewFinalTime(finalTime);
     }
