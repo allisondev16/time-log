@@ -6,10 +6,6 @@ import Zoom from '@material-ui/core/Zoom';
 import TimeBox from './TimeBox';
 
 function Time() {
-    // Date.prototype.addHours = function (h) {
-    //     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
-    //     return this;
-    // }
 
     const [isStart, setStart] = useState(false);
     const [finalTime, setFinalTime] = useState();
@@ -42,7 +38,6 @@ function Time() {
         setBreak(true);
         let breakTime = new Date();
         setBreakTime(breakTime);
-
     }
 
     function handleStartFromBreak() {
