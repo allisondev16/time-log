@@ -2,7 +2,8 @@
   "name": "time-log",
   "version": "0.1.0",
   "engines": {
-    "node": "14.x"
+    "node": "14.17.1",
+    "npm": "7.10.0"
   },
   "private": true,
   "dependencies": {
