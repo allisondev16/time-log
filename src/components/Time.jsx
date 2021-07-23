@@ -4,6 +4,7 @@ import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
 import TimeBox from './TimeBox';
+import Axios from "axios";
 
 function Time() {
 
@@ -16,6 +17,11 @@ function Time() {
 
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
+
+    const [dateRecord, setDateRecord] = useState({
+        date: "initial",
+        overtime: "initial"
+    });
 
     // Outstanding break time
     const [breakDuration, setBreakDuration] = useState(0);
@@ -71,13 +77,26 @@ function Time() {
         console.log("Done Working time: " + doneWorkingTime);
 
         // final time - done working time
-        let overtime = doneWorkingTime - finalTime;
+        let overtime = doneWorkingTime - newFinalTime;
         setOvertime(overtime);
         console.log("Overtime in hours: " + overtime / 1000 / 60 / 60);
 
         // render the result
         setDone(true);
+
+        // let eventDateRecord = {...dateRecord};
+        // eventDateRecord.overtime = value;
+        // eventDateRecord.date = new Date();
+        // setDateRecord(eventDateRecord);
+        // console.log(dateRecord);
     }
+
+    useEffect(()=>{
+        setDateRecord({
+            date: new Date().toLocaleDateString(),
+        overtime: overtime
+        });
+    },[overtime])
 
     return <div>
 
@@ -97,7 +116,7 @@ function Time() {
                 </Box>
 
                 <Box ml={2} mr={2} mt={8} mb={6}>
-                    <Button onClick={handleDoneWorking} variant="contained" color="secondary" size="large">Done Working</Button>
+                    <Button onClick={()=>{handleDoneWorking(overtime)}} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
 
             </div></Zoom>}
