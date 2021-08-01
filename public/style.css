@@ -11,7 +11,7 @@ html {
 
 body {
   background: #eee;
-  background-image: url("https://www.transparenttextures.com/patterns/escheresque.png");
+  /* background-image: url("https://www.transparenttextures.com/patterns/escheresque.png"); */
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
 }
 
@@ -20,15 +20,22 @@ h3 {
 }
 
 header {
-  background-color: #3C8DAD;
+  /* background-color: #3C8DAD;  */
+  background-color: #fff;
   padding: 8px 32px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
 }
 
 header h1 {
-  color: #fff;
+  /* color: #fff; */
   font-family: 'Nunito', sans-serif;
   font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.material-icons {
+  vertical-align: middle;
 }
 
 .startButton {

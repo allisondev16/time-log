@@ -4,7 +4,7 @@ import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
 import TimeBox from './TimeBox';
-import Axios from "axios";
+import axios from "./axios";
 
 function Time() {
 
@@ -29,6 +29,14 @@ function Time() {
     // Allocated Break Time in minutes:
     let allocatedBreakTime = 175;
     const [remainingBreakTime, setRemainingBreakTime] = useState();
+
+    // useEffect(()=>{
+    //     async function fetchData() {
+    //         const req = await axios.get("time-log/data");
+
+
+    //     }
+    // })
 
     function handleStart() {
         setStart(true);
