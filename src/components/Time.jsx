@@ -18,10 +18,6 @@ function Time() {
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
 
-    const [dateRecord, setDateRecord] = useState({
-        date: "initial",
-        overtime: "initial"
-    });
 
     // Outstanding break time
     const [breakDuration, setBreakDuration] = useState(0);
@@ -30,21 +26,77 @@ function Time() {
     let allocatedBreakTime = 175;
     const [remainingBreakTime, setRemainingBreakTime] = useState();
 
-    // useEffect(()=>{
-    //     async function fetchData() {
-    //         const req = await axios.get("time-log/data");
+    //get request
+    useEffect(() => {
+        async function fetchData() {
+            const req = await axios.get("time-log/data");
+
+            const sessionToday = req.data.find(session => session.day === new Date().toDateString());
+
+            if (sessionToday) {
+                setNewFinalTime(new Date(sessionToday.finalTime));
+                setBreakDuration(sessionToday.breakTimeDuration);
+                setOvertime(sessionToday.overtime);
+                setStart(sessionToday.isStart);
+                setBreak(sessionToday.isBreak);
+                setDone(sessionToday.isDone);
+                console.log(sessionToday);
+            } else {
+                axios.post("time-log/data", {
+                    day: new Date().toDateString(),
+                    breakTimeDuration: 0
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+            }
 
 
-    //     }
-    // })
+        }
+        console.log("Get request");
+        fetchData();
+    }, []);
+
+    //post request
+    useEffect(() => {
+        async function postData() {
+            await axios.post("time-log/data", {
+                day: new Date().toDateString(),
+                finalTime: newFinalTime,
+                breakTimeDuration: breakDuration,
+                overtime: overtime,
+                isStart: isStart,
+                isBreak: isBreak,
+                isDone: isDone
+            })
+                .then(function (response) {
+                    console.log(response);
+                })
+
+        }
+        console.log("Post request");
+        // postData();
+    }, [newFinalTime, breakDuration, overtime, isStart, isBreak, isDone]);
+    //newFinalTime, breakDuration, overtime
 
     function handleStart() {
         setStart(true);
         // let time = new Date();
         // let finalTime = new Date().addHours(10);
-        let finalTime = new Date(new Date().getTime() + 10*60*60*1000);
+
+        let finalTime = new Date(new Date().getTime() + 10 * 60 * 60 * 1000);
         setFinalTime(finalTime);
         setNewFinalTime(finalTime);
+
+        //patch request
+        axios.patch("time-log/data", {
+            finalTime: finalTime,
+            isStart: true,
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+
     }
 
     function handleBreak() {
@@ -71,11 +123,12 @@ function Time() {
     useEffect(() => {
         let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
         setRemainingBreakTime(currentRemainingBreakTime);
-
+        console.log(currentRemainingBreakTime);
         if (currentRemainingBreakTime < 0) {
             let newFinalTime = new Date(finalTime.getTime() - currentRemainingBreakTime);
             setNewFinalTime(newFinalTime);
         }
+        
     }, [breakDuration]);
 
     function handleDoneWorking() {
@@ -85,26 +138,13 @@ function Time() {
         console.log("Done Working time: " + doneWorkingTime);
 
         // final time - done working time
-        let overtime = doneWorkingTime - newFinalTime;
+        let overtime = doneWorkingTime - finalTime + remainingBreakTime;
         setOvertime(overtime);
         console.log("Overtime in hours: " + overtime / 1000 / 60 / 60);
 
         // render the result
         setDone(true);
-
-        // let eventDateRecord = {...dateRecord};
-        // eventDateRecord.overtime = value;
-        // eventDateRecord.date = new Date();
-        // setDateRecord(eventDateRecord);
-        // console.log(dateRecord);
     }
-
-    useEffect(()=>{
-        setDateRecord({
-            date: new Date().toLocaleDateString(),
-        overtime: overtime
-        });
-    },[overtime])
 
     return <div>
 
@@ -112,7 +152,7 @@ function Time() {
             <TimeBox
                 isStart={isStart}
                 title={"Stop working by"}
-                time={newFinalTime.toLocaleTimeString()}
+                time={`${newFinalTime.toLocaleTimeString()}`}
             />
         }
 
@@ -124,7 +164,7 @@ function Time() {
                 </Box>
 
                 <Box ml={2} mr={2} mt={8} mb={6}>
-                    <Button onClick={()=>{handleDoneWorking(overtime)}} variant="contained" color="secondary" size="large">Done Working</Button>
+                    <Button onClick={() => { handleDoneWorking(overtime) }} variant="contained" color="secondary" size="large">Done Working</Button>
                 </Box>
 
             </div></Zoom>}

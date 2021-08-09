@@ -61,3 +61,15 @@ header h1 {
   flex-direction: column;
 }
 
+.timeBorder {
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 50%;
+  border: 12px solid #2186d8;
+  height: 250px;
+  width: 250px
+}
+
