@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8001'
+    baseURL: 'http://time-log-16-server.herokuapp.com/'
 });
 
 export default instance;

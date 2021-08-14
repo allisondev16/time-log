@@ -35,8 +35,9 @@ function Time() {
 
             if (sessionToday) {
                 setNewFinalTime(new Date(sessionToday.finalTime));
-                setBreakDuration(sessionToday.breakTimeDuration);
-                setOvertime(sessionToday.overtime);
+                setBreakTime(new Date(sessionToday.breakTime));
+                setBreakDuration(sessionToday.breakDuration);
+                setOvertime(new Date(sessionToday.overtime));
                 setStart(sessionToday.isStart);
                 setBreak(sessionToday.isBreak);
                 setDone(sessionToday.isDone);
@@ -44,7 +45,6 @@ function Time() {
             } else {
                 axios.post("time-log/data", {
                     day: new Date().toDateString(),
-                    breakTimeDuration: 0
                 })
                     .then(function (response) {
                         console.log(response);
@@ -56,28 +56,6 @@ function Time() {
         console.log("Get request");
         fetchData();
     }, []);
-
-    //post request
-    useEffect(() => {
-        async function postData() {
-            await axios.post("time-log/data", {
-                day: new Date().toDateString(),
-                finalTime: newFinalTime,
-                breakTimeDuration: breakDuration,
-                overtime: overtime,
-                isStart: isStart,
-                isBreak: isBreak,
-                isDone: isDone
-            })
-                .then(function (response) {
-                    console.log(response);
-                })
-
-        }
-        console.log("Post request");
-        // postData();
-    }, [newFinalTime, breakDuration, overtime, isStart, isBreak, isDone]);
-    //newFinalTime, breakDuration, overtime
 
     function handleStart() {
         setStart(true);
@@ -104,11 +82,21 @@ function Time() {
         setBreak(true);
         let breakTime = new Date();
         setBreakTime(breakTime);
+
+        //patch request
+        axios.patch("time-log/data", {
+            breakTime: breakTime,
+            isStart: false,
+            isBreak: true,
+        })
+            .then(function (response) {
+                console.log(response);
+            })
     }
 
     function handleStartFromBreak() {
         setStart(true);
-        setDone(false);
+        //setDone(false);
 
         let resumeTime = new Date();
 
@@ -116,6 +104,14 @@ function Time() {
         setBreakDuration((prevValue) => {
             return prevValue + currentBreakDuration;
         });
+        //patch request
+        axios.patch("time-log/data", {
+            breakDuration: breakDuration + currentBreakDuration,
+            isStart: true,
+        })
+            .then(function (response) {
+                console.log(response);
+            })
     }
 
     // used Effect Hook to use the updated value of breakDuration (Reference: https://reactjs.org/docs/hooks-effect.html)
@@ -127,8 +123,15 @@ function Time() {
         if (currentRemainingBreakTime < 0) {
             let newFinalTime = new Date(finalTime.getTime() - currentRemainingBreakTime);
             setNewFinalTime(newFinalTime);
+            //patch request
+            axios.patch("time-log/data", {
+                finalTime: newFinalTime,
+            })
+                .then(function (response) {
+                    console.log(response);
+                })
         }
-        
+        console.log(breakDuration);
     }, [breakDuration]);
 
     function handleDoneWorking() {
@@ -144,6 +147,16 @@ function Time() {
 
         // render the result
         setDone(true);
+
+        //patch request
+        axios.patch("time-log/data", {
+            overtime: overtime,
+            isStart: false,
+            isDone: true
+        })
+            .then(function (response) {
+                console.log(response);
+            })
     }
 
     return <div>
