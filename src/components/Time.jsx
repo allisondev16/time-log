@@ -4,7 +4,7 @@ import Fade from '@material-ui/core/Fade';
 import Box from '@material-ui/core/Box';
 import Zoom from '@material-ui/core/Zoom';
 import TimeBox from './TimeBox';
-import axios from "./axios";
+import axios from "axios";
 
 function Time() {
 
@@ -17,6 +17,7 @@ function Time() {
 
     const [isDone, setDone] = useState(false);
     const [overtime, setOvertime] = useState();
+    const [outstandingOvertime, setOutstandingOvertime] = useState(0);
 
 
     // Outstanding break time
@@ -31,9 +32,11 @@ function Time() {
         async function fetchData() {
             const req = await axios.get("time-log/data");
 
+            //find the collection for today
             const sessionToday = req.data.find(session => session.day === new Date().toDateString());
 
             if (sessionToday) {
+                setFinalTime(new Date(sessionToday.finalTime));
                 setNewFinalTime(new Date(sessionToday.finalTime));
                 setBreakTime(new Date(sessionToday.breakTime));
                 setBreakDuration(sessionToday.breakDuration);
@@ -45,13 +48,18 @@ function Time() {
             } else {
                 axios.post("time-log/data", {
                     day: new Date().toDateString(),
+                    breakDuration: 0
                 })
                     .then(function (response) {
                         console.log(response);
                     })
             }
 
-
+            let outstandingOvertime = 0;
+            req.data.map(day => outstandingOvertime += day.overtime);
+            if (outstandingOvertime) {
+                setOutstandingOvertime(outstandingOvertime);
+            }
         }
         console.log("Get request");
         fetchData();
@@ -131,7 +139,6 @@ function Time() {
                     console.log(response);
                 })
         }
-        console.log(breakDuration);
     }, [breakDuration]);
 
     function handleDoneWorking() {
@@ -145,6 +152,8 @@ function Time() {
         setOvertime(overtime);
         console.log("Overtime in hours: " + overtime / 1000 / 60 / 60);
 
+
+
         // render the result
         setDone(true);
 
@@ -156,6 +165,7 @@ function Time() {
         })
             .then(function (response) {
                 console.log(response);
+                setOutstandingOvertime(prevValue => { return prevValue + overtime });
             })
     }
 
@@ -188,12 +198,19 @@ function Time() {
                 <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minutes"}</h4>
             </div></Fade>}
 
-        {isDone &&
+        {isDone && <div>
             <TimeBox
                 isStart={isDone}
                 title={"Overtime"}
                 time={(overtime / 1000 / 60 / 60).toFixed(2) + " hours"}
             />
+            <br />
+            <br />
+            <div className="time">
+                <h4>Outstanding overtime: {
+                    (outstandingOvertime / 1000 / 60 / 60).toFixed(2) + " hours"
+                }</h4>
+            </div></div>
         }
 
         <div className="startButton">
