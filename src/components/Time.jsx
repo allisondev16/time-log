@@ -30,35 +30,36 @@ function Time() {
     //get request
     useEffect(() => {
         async function fetchData() {
-            const req = await axios.get("time-log/data");
+            const req = await axios.get("time-log/data")
+            if (req) {
+                //find the collection for today
+                const sessionToday = req.data.find(session => session.day === new Date().toDateString());
 
-            //find the collection for today
-            const sessionToday = req.data.find(session => session.day === new Date().toDateString());
-
-            if (sessionToday) {
-                setFinalTime(new Date(sessionToday.finalTime));
-                setNewFinalTime(new Date(sessionToday.finalTime));
-                setBreakTime(new Date(sessionToday.breakTime));
-                setBreakDuration(sessionToday.breakDuration);
-                setOvertime(new Date(sessionToday.overtime));
-                setStart(sessionToday.isStart);
-                setBreak(sessionToday.isBreak);
-                setDone(sessionToday.isDone);
-                console.log(sessionToday);
-            } else {
-                axios.post("time-log/data", {
-                    day: new Date().toDateString(),
-                    breakDuration: 0
-                })
-                    .then(function (response) {
-                        console.log(response);
+                if (sessionToday) {
+                    setFinalTime(new Date(sessionToday.finalTime));
+                    setNewFinalTime(new Date(sessionToday.finalTime));
+                    setBreakTime(new Date(sessionToday.breakTime));
+                    setBreakDuration(sessionToday.breakDuration);
+                    setOvertime(new Date(sessionToday.overtime));
+                    setStart(sessionToday.isStart);
+                    setBreak(sessionToday.isBreak);
+                    setDone(sessionToday.isDone);
+                    console.log(sessionToday);
+                } else {
+                    axios.post("time-log/data", {
+                        day: new Date().toDateString(),
+                        breakDuration: 0
                     })
-            }
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                }
 
-            let outstandingOvertime = 0;
-            req.data.map(day => outstandingOvertime += day.overtime);
-            if (outstandingOvertime) {
-                setOutstandingOvertime(outstandingOvertime);
+                let outstandingOvertime = 0;
+                req.data.map(day => outstandingOvertime += day.overtime);
+                if (outstandingOvertime) {
+                    setOutstandingOvertime(outstandingOvertime);
+                }
             }
         }
         console.log("Get request");
