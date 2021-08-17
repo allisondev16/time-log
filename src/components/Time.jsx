@@ -30,7 +30,8 @@ function Time() {
     //get request
     useEffect(() => {
         async function fetchData() {
-            const req = await axios.get("time-log/data")
+            const req = await axios.get("time-log/data");
+            console.log(`req:${req}`);
             if (req) {
                 //find the collection for today
                 const sessionToday = req.data.find(session => session.day === new Date().toDateString());
