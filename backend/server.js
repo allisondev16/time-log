@@ -5,7 +5,7 @@ const path = require('path');
 
 // App Config
 const app = express();
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 5000;
 const connection_url = "mongodb+srv://timelog:f@E7D_6prRXdma3@cluster0.9fgna.mongodb.net/timelogDB?retryWrites=true&w=majority";
 
 // Middlewares
