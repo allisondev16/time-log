@@ -22,7 +22,7 @@ mongoose.connect(connection_url, {
 
 // API
 const timeLogs = require('./api/timeLogs');
-app.use('/time-log/data', timeLogs);
+app.use('/api/timeLogs', timeLogs);
 
 // API Endpoints
 app.use(express.static(path.join(__dirname, '../build')));
