@@ -3,6 +3,12 @@ const router = express.Router()
 
 const Time = require('../models/timeLog');
 
+router.get('/', (req, res) => {
+    Time.find()
+        .then(users => res.json(users))
+        .catch(err => console.log(err))
+})
+
 router.post("/", (req, res) => {
     const dbTime = req.body;
 
@@ -14,12 +20,6 @@ router.post("/", (req, res) => {
         }
     });
 });
-
-router.get('/', (req, res) => {
-    Time.find()
-        .then(users => res.json(users))
-        .catch(err => console.log(err))
-})
 
 router.patch("/", (req, res) => {
     const query = { day: new Date().toDateString() };
