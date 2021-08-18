@@ -15,15 +15,11 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
-    Time.find((err, data) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.status(200).send(data);
-        }
-    });
-});
+router.get('/', (req, res) => {
+    Time.find()
+        .then(users => res.json(users))
+        .catch(err => console.log(err))
+})
 
 router.patch("/", (req, res) => {
     const query = { day: new Date().toDateString() };
