@@ -25,10 +25,10 @@ const timeLogs = require('./api/timeLogs');
 app.use('/api/timeLogs', timeLogs);
 
 // API Endpoints
-app.use(express.static(path.join(__dirname, '../build')));
-app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build'))
-});
+// app.use(express.static(path.join(__dirname, '../build')));
+// app.get('/home', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../build'))
+// });
 
 app.listen(port, function () {
   console.log("Server is up!")
