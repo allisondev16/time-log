@@ -3,7 +3,7 @@ import TimelapseIcon from '@material-ui/icons/Timelapse';
 
 function Header () {
     return <header>
-    <h1>Time Log <TimelapseIcon fontSize="large" className="material-icons" /></h1>
+    <h1>Time Log! <TimelapseIcon fontSize="large" className="material-icons" /></h1>
     </header>
 }
 
