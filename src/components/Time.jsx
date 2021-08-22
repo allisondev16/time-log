@@ -30,7 +30,7 @@ function Time() {
     //get request
     useEffect(() => {
         async function fetchData() {
-            const req = await axios.get("time-log/data");
+            const req = await axios.get("/time-log/data");
             console.log(`req:${req}`);
             if (req) {
                 //find the collection for today
@@ -47,7 +47,7 @@ function Time() {
                     setDone(sessionToday.isDone);
                     console.log(sessionToday);
                 } else {
-                    axios.post("time-log/data", {
+                    axios.post("/time-log/data", {
                         day: new Date().toDateString(),
                         breakDuration: 0
                     })
@@ -77,7 +77,7 @@ function Time() {
         setNewFinalTime(finalTime);
 
         //patch request
-        axios.patch("time-log/data", {
+        axios.patch("/time-log/data", {
             finalTime: finalTime,
             isStart: true,
         })
@@ -94,7 +94,7 @@ function Time() {
         setBreakTime(breakTime);
 
         //patch request
-        axios.patch("time-log/data", {
+        axios.patch("/time-log/data", {
             breakTime: breakTime,
             isStart: false,
             isBreak: true,
@@ -115,7 +115,7 @@ function Time() {
             return prevValue + currentBreakDuration;
         });
         //patch request
-        axios.patch("time-log/data", {
+        axios.patch("/time-log/data", {
             breakDuration: breakDuration + currentBreakDuration,
             isStart: true,
         })
@@ -134,14 +134,14 @@ function Time() {
             let newFinalTime = new Date(finalTime.getTime() - currentRemainingBreakTime);
             setNewFinalTime(newFinalTime);
             //patch request
-            axios.patch("time-log/data", {
+            axios.patch("/time-log/data", {
                 finalTime: newFinalTime,
             })
                 .then(function (response) {
                     console.log(response);
                 })
         }
-    }, [breakDuration]);
+    }, [breakDuration, allocatedBreakTime, finalTime]);
 
     function handleDoneWorking() {
         setStart(false);
@@ -160,7 +160,7 @@ function Time() {
         setDone(true);
 
         //patch request
-        axios.patch("time-log/data", {
+        axios.patch("/time-log/data", {
             overtime: overtime,
             isStart: false,
             isDone: true

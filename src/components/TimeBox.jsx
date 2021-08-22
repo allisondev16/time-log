@@ -1,6 +1,5 @@
 import React from "react";
 import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
 
 function TimeBox(props) {
     return <Fade in={props.isStart}>
