@@ -16,7 +16,7 @@ function Time() {
     const [breakTime, setBreakTime] = useState();
 
     const [isDone, setDone] = useState(false);
-    const [overtime, setOvertime] = useState();
+    const [overtime, setOvertime] = useState(0);
     const [outstandingOvertime, setOutstandingOvertime] = useState(0);
 
 
@@ -32,35 +32,30 @@ function Time() {
         async function fetchData() {
             const req = await axios.get("/time-log/data");
             console.log(`req:${req}`);
-            if (req) {
-                //find the collection for today
-                const sessionToday = req.data.find(session => session.day === new Date().toDateString());
 
-                if (sessionToday) {
-                    setFinalTime(new Date(sessionToday.finalTime));
-                    setNewFinalTime(new Date(sessionToday.finalTime));
-                    setBreakTime(new Date(sessionToday.breakTime));
-                    setBreakDuration(sessionToday.breakDuration);
-                    setOvertime(new Date(sessionToday.overtime));
-                    setStart(sessionToday.isStart);
-                    setBreak(sessionToday.isBreak);
-                    setDone(sessionToday.isDone);
-                    console.log(sessionToday);
-                } else {
-                    axios.post("/time-log/data", {
-                        day: new Date().toDateString(),
-                        breakDuration: 0
+            //find the collection for today
+            const sessionToday = req.data.find(session => session.day === new Date().toDateString());
+
+            if (sessionToday) {
+                setFinalTime(new Date(sessionToday.finalTime));
+                setNewFinalTime(new Date(sessionToday.finalTime));
+                setBreakTime(new Date(sessionToday.breakTime));
+                setBreakDuration(sessionToday.breakDuration);
+                setOvertime(sessionToday.overtime);
+                setStart(sessionToday.isStart);
+                setBreak(sessionToday.isBreak);
+                setDone(sessionToday.isDone);
+                console.log(sessionToday);
+                req.data.map(day => setOutstandingOvertime(prevValue => {return prevValue + day.overtime}));
+            } else {
+                axios.post("/time-log/data", {
+                    day: new Date().toDateString(),
+                    breakDuration: 0,
+                    overtime: 0
+                })
+                    .then(function (response) {
+                        console.log(response);
                     })
-                        .then(function (response) {
-                            console.log(response);
-                        })
-                }
-
-                let outstandingOvertime = 0;
-                req.data.map(day => outstandingOvertime += day.overtime);
-                if (outstandingOvertime) {
-                    setOutstandingOvertime(outstandingOvertime);
-                }
             }
         }
         console.log("Get request");
