@@ -2,7 +2,7 @@ const express = require("express");
 const Cors = require("cors");
 const path = require("path");
 const app = express();
-require('./database');
+require("./database");
 
 // Middlewares
 app.use(express.json());
