@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# Time Log!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I created this project to practice my skills on MERN Stack, and this is my first project using MERN Stack. This project is just simple with the purpose of tracking your break time at work. I made this minimalistic wherein only essential elements are displayed, making the app very easy to use and user-friendly. The working hours and break time per day are currently hardcoded to make it more minimalistic for me. Still, of course, I will soon implement a customization feature for multiple users using this app.
 
-## Available Scripts
+Deployed in Heroku with this URL: https://time-log-17.herokuapp.com/
+(The deployed URL has a hardcoded break time of 1 minute to test the app's functionality.)
 
-In the project directory, you can run:
 
-### `npm start`
+## Frontend
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+I used React.js for the frontend because I find it easier to render the output after each button click utilizing this framework. I used functional components as it's easier to read. Hooks (useState and useEffect) and conditional rendering is used for this app.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+I used Material-UI components for the icon and the buttons with animation when clicked. I created the TimeBox component as it's being reused after clicking the 'Start Working' button and the 'Done Working' button. I used HTML and CSS for the rest of the elements and Flexbox for the layout.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Backend
 
-### `npm run build`
+I used Node.js and its Express.js framework for the server and MongoDB as the database and Mongoose to create the model. I used Get, Post, and Patch requests for this app.
+You can check the HTTP request and response in Google Chrome by right click, select 'Inspect' to open the developer tools, then select the 'Network' tab. The responses are also logged in the 'Console' tab.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Get Request
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The get request for the home page fetches the build folder created during the deployment.
+The get request for path '/time-log/data' fetches the data from the MongoDB database.
+React renders the fetched data to the frontend using Axios to retain your data or progress after refreshing the browser or visiting the site on another device. However, the data for that day is only rendered for that day.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Post Request
 
-### `npm run eject`
+The post request is triggered at the start of the day, meaning a fresh new document is created in the MongoDB database. The collection in the database is designed to have only one collection per day.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Patch Request
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+I used patch request to update the document in the database, which was created using post request at the start of the day.
+The patch request triggers after clicking the buttons.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Connecting Frontend and Backend
 
-## Learn More
+In package.json, the start script is set to run the server.js file of the backend using Node.js; this will trigger the get request for the home page that fetches the build folder created during the deployment through the "heroku-postbuild" in package.json. Axios is used in the frontend to make HTTP requests.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Usage
 
-### Code Splitting
+### `Start Working` Button
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+When you click the 'Start Working' button, the app will show the time you should stop working, given the working hours for the day. The working hours for this app are hardcoded to 10 hours (inclusive of 1-hour lunchtime). Based on Pomodoro, the break time should be about 175 minutes for 9 working hours per day and is also hardcoded.
 
-### Analyzing the Bundle Size
+After clicking this button, there is no turning back for the day as there is no reset button as I intended this app to be minimalistic as possible, but I will add a reset button feature soon. You will encounter this button the next day as I designed the reset on the next day.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### `Take a Break` & `Resume Working` Button
 
-### Making a Progressive Web App
+When you click the 'Take a Break' button, the 'Remaining Break Time' will be adjusted and lessen according to the duration of your break time. After clicking the 'Resume Working' button, you will see your remaining break time output.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+When the 'Remaining Break Time' becomes negative, the app will adjust the 'Stop working' time as an offset.
 
-### Advanced Configuration
+### `Done Working` Button
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+When you click the 'Done Working' button, it will show your overtime and outstanding overtime. The outstanding overtime is the summation of all overtime in the database. Negative overtime means undertime.
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**A bug where the outstanding overtime is not rendered immediately. The workaround for this is to refresh the browser. This issue is to be resolved.**
