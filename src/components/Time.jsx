@@ -24,7 +24,7 @@ function Time() {
     const [breakDuration, setBreakDuration] = useState(0);
 
     // Allocated Break Time in minutes:
-    let allocatedBreakTime = 175;
+    let allocatedBreakTime = 1;
     const [remainingBreakTime, setRemainingBreakTime] = useState();
 
     //get request
@@ -185,7 +185,7 @@ function Time() {
 
         {isStart && <Fade in={isStart}>
             <div className="time">
-                <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minutes"}</h4>
+                <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minute/s"}</h4>
             </div></Fade>}
 
         {isDone && <div>
