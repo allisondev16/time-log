@@ -185,7 +185,7 @@ function Time() {
 
         {isStart && <Fade in={isStart}>
             <div className="time">
-                <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minute/s"}</h4>
+                <h4>Remaining Break Time: {(remainingBreakTime / 60 / 1000).toFixed(2) + " minute"}</h4>
             </div></Fade>}
 
         {isDone && <div>
