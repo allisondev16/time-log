@@ -31,7 +31,6 @@ function Time() {
     useEffect(() => {
         async function fetchData() {
             const req = await axios.get("/time-log/data");
-            console.log(`req:${req}`);
 
             //find the collection for today
             const sessionToday = req.data.find(session => session.day === new Date().toDateString());
@@ -45,8 +44,7 @@ function Time() {
                 setStart(sessionToday.isStart);
                 setBreak(sessionToday.isBreak);
                 setDone(sessionToday.isDone);
-                console.log(sessionToday);
-                req.data.map(day => setOutstandingOvertime(prevValue => {return prevValue + day.overtime}));
+                req.data.map(day => setOutstandingOvertime(prevValue => { return prevValue + day.overtime }));
             } else {
                 axios.post("/time-log/data", {
                     day: new Date().toDateString(),
@@ -58,7 +56,6 @@ function Time() {
                     })
             }
         }
-        console.log("Get request");
         fetchData();
     }, []);
 
@@ -124,7 +121,7 @@ function Time() {
     useEffect(() => {
         let currentRemainingBreakTime = allocatedBreakTime * 60 * 1000 - breakDuration;
         setRemainingBreakTime(currentRemainingBreakTime);
-        console.log(currentRemainingBreakTime);
+
         if (currentRemainingBreakTime < 0) {
             let newFinalTime = new Date(finalTime.getTime() - currentRemainingBreakTime);
             setNewFinalTime(newFinalTime);
@@ -142,14 +139,10 @@ function Time() {
         setStart(false);
 
         let doneWorkingTime = new Date();
-        console.log("Done Working time: " + doneWorkingTime);
 
         // final time - done working time
         let overtime = doneWorkingTime - finalTime + remainingBreakTime;
         setOvertime(overtime);
-        console.log("Overtime in hours: " + overtime / 1000 / 60 / 60);
-
-
 
         // render the result
         setDone(true);
