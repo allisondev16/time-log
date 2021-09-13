@@ -3,7 +3,6 @@
 I created this project to practice my skills on MERN Stack, and this is my first project using MERN Stack. This project is just simple with the purpose of tracking your break time at work. I made this minimalistic wherein only essential elements are displayed, making the app very easy to use and user-friendly. The working hours and break time per day are currently hardcoded to make it more minimalistic for me. Still, of course, I will soon implement a customization feature for multiple users using this app.
 
 Deployed in Heroku with this URL: https://time-log-17.herokuapp.com/
-(The deployed URL has a hardcoded break time of 1 minute to test the app's functionality.)
 
 
 ## Frontend
